@@ -1,20 +1,19 @@
-import { Home, Star, Archive, Plus } from "lucide-react";
+import { LayoutGrid, Star, ChevronDown, Archive, Plus } from "lucide-react";
 import ProjectList from "./ProjectList";
 
 const SidebarNav = () => {
   return (
-    <div className="flex-1 px-4 space-y-6 overflow-y-auto">
+    <div className="flex-1 px-4 space-y-3 overflow-y-auto">
 
       {/* Main */}
-      <div>
-        <p className="text-xs text-gray-500 mb-2">MAIN</p>
-
-        <NavItem icon={<Home size={18} />} label="Dashboard" active />
+        <NavItem icon={<LayoutGrid size={18} />} label="Dashboard" active />
         <NavItem icon={<Star size={18} />} label="Starred" />
-      </div>
 
-      {/* Projects */}
-      <ProjectList />
+      <div>
+        <NavItem icon={<ChevronDown size={18} />} label="Project" rightIcon={<Plus size={14} className="cursor-pointer text-gray-500" />} />
+        {/* Projects */}
+        <ProjectList />
+      </div>
 
       {/* Archived */}
       <NavItem icon={<Archive size={18} />} label="Archived" />
@@ -22,13 +21,16 @@ const SidebarNav = () => {
   );
 };
 
-const NavItem = ({ icon, label, active }) => (
+const NavItem = ({ icon, label, active, rightIcon }) => (
   <div
-    className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer
+    className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
       ${active ? "bg-gray-300 font-medium" : "text-gray-600 hover:bg-gray-200"}`}
   >
-    {icon}
-    {label}
+    <div className="flex items-center gap-3">
+      {icon}
+      {label}
+    </div>
+    {rightIcon}
   </div>
 );
 

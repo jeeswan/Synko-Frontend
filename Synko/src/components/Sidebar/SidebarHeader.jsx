@@ -3,9 +3,9 @@ import assets from '../../assets/assets.js';
 
 const SidebarHeader = () => {
   return (
-    <div className="flex items-center">
-      <img src={assets.Logo} alt="Synko Logo" className='w-[171px] h-[141px]'/>
-      <span className="text-2xl font-semibold">Synko</span>
+    <div className="flex items-center p-5 gap-1">
+      <img src={assets.logo_synko} alt="Synko Logo" className='w-15 h-10'/>
+      <span className="text-3xl font-semibold">Synko</span>
     </div>
   );
 };

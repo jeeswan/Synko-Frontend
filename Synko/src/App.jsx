@@ -21,7 +21,7 @@ function App() {
       <div className="flex-1 relative bg-gray-100 overflow-y-auto">
         {/* Top bar */}
         {!hideSidebar && (
-          <div className="fixed w-full flex items-center justify-between px-5 h-16 bg-gray-100 border-b-2 border-gray-300 shadow z-50">
+          <div className="w-full flex items-center justify-between px-5 h-16 bg-gray-100 border-b-2 border-gray-300 shadow z-50">
             {/* Sidebar toggle button */}
             <button
               onClick={() => setSidebarVisible(!sidebarVisible)}
@@ -38,7 +38,7 @@ function App() {
         )}
 
         {/* Page content */}
-        <div className="pt-16 px-6">
+        <div className="px-9 py-5">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
