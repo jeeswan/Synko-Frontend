@@ -18,7 +18,7 @@ function App() {
       {!hideSidebar && sidebarVisible && <Sidebar />}
 
       {/* Main content */}
-      <div className="flex-1 relative bg-gray-100 overflow-y-auto">
+      <div className="flex-1 flex flex-col bg-gray-100">
         {/* Top bar */}
         {!hideSidebar && (
           <div className="w-full flex items-center justify-between px-5 h-16 bg-gray-100 border-b-2 border-gray-300 shadow z-50">
@@ -38,7 +38,7 @@ function App() {
         )}
 
         {/* Page content */}
-        <div className="px-9 py-5">
+        <div className="flex-1 overflow-y-auto px-9 py-5">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
