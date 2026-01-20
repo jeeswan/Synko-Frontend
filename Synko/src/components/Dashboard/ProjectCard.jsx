@@ -9,7 +9,7 @@ const ProjectCard = ({ project }) => {
   const progress = Math.round((project.completed / project.total) * 100);
 
   return (
-    <div className="bg-white border rounded-xl p-4 hover:shadow-md transition">
+    <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition">
       
       {/* Header */}
       <div className="flex justify-between items-start">

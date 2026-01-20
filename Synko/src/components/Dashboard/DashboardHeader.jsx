@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Plus } from 'lucide-react'
+import CreateProject from '../CreateProject'
 
 const DashboardHeader = () => {
+  const [openProject, setOpenProject] = useState(false);
   return (
     <div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
 
-        <button className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+        <button
+          onClick={() => setOpenProject(true)}
+          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition cursor-pointer">
           <Plus size={16} />
           New Project
         </button>
@@ -16,6 +20,7 @@ const DashboardHeader = () => {
       <div className='pb-4'>
         <p className='text-sm text-gray-400 font-light'>Welcome back! Here’s an overview of your projects.</p>
       </div>
+      {openProject && <CreateProject onClose={() => setOpenProject(false)} />}
     </div>
   )
 }
