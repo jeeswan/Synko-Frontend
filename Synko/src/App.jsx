@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import ProjectDashboard from './pages/ProjectDashboard.jsx'
 import Sidebar from './components/Sidebar/Sidebar.jsx'
 import { Columns2, Moon } from 'lucide-react'
 
@@ -38,10 +39,11 @@ function App() {
         )}
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto px-9 py-5">
+        <div className={`flex-1 overflow-y-auto ${!location.pathname.startsWith('/project') ? 'px-9 py-5' : ''}`}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/project/:id" element={<ProjectDashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
