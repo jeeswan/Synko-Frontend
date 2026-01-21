@@ -71,7 +71,15 @@ export const boardData = [
     {
     id: "done",
     title: "Done",
-    count: 0,
-    tasks: [],
+    count: 1,
+    tasks: [
+        {
+        id: 7,
+        title: "Set up project repository",
+        tags: ["Feature"],
+        date: "Dec 10",
+        color: "green",
+        }
+    ],
     },
 ];

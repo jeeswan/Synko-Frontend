@@ -2,7 +2,7 @@ import { Settings } from "lucide-react";
 
 const UserProfile = () => {
   return (
-    <div className="border-t px-4 py-3 flex items-center gap-3">
+    <div className="border-t-gray-50 px-4 py-3 flex items-center gap-3">
       <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
         JB
       </div>
