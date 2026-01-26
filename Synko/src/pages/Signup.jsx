@@ -1,6 +1,40 @@
-import React from 'react'
+import React, {useState} from 'react'
+import { signup } from '../services/auth'
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    password_confirmation: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await signup(formData);
+      console.log("SUCCESS:", response.data);
+      navigate('/login');
+    } catch (error) {
+      if (error.response) {
+        console.log("SERVER ERROR:", error.response.data);
+      } else {
+        console.log("NETWORK ERROR:", error.message);
+      }
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -28,7 +62,7 @@ const Signup = () => {
             Fill in the details to create your account
           </p>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -36,7 +70,10 @@ const Signup = () => {
                 </label>
                 <input
                     type="text"
-                    placeholder="John"
+                    placeholder="First Name"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
                 </div>
@@ -47,7 +84,10 @@ const Signup = () => {
                 </label>
                 <input
                     type="text"
-                    placeholder="Doe"
+                    placeholder="Last Name"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
                 </div>
@@ -60,6 +100,9 @@ const Signup = () => {
               <input
                 type="email"
                 placeholder="you@example.com"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -71,6 +114,9 @@ const Signup = () => {
               <input
                 type="password"
                 placeholder="••••••••"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -81,7 +127,9 @@ const Signup = () => {
               </label>
               <input
                 type="password"
-                placeholder="••••••••"
+                name="password_confirmation"
+                value={formData.password_confirmation}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
