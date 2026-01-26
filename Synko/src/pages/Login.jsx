@@ -1,6 +1,39 @@
 import React from "react"
+import { login } from '../services/auth'
+import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await login(formData);
+      console.log("SUCCESS:", response.data);
+      navigate('/dashboard');
+    } catch (error) {
+      if (error.response) {
+        console.log("SERVER ERROR:", error.response.data);
+      } else {
+        console.log("NETWORK ERROR:", error.message);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -28,7 +61,7 @@ const Login = () => {
             Enter your credentials to continue
           </p>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -36,6 +69,9 @@ const Login = () => {
               <input
                 type="email"
                 placeholder="you@example.com"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -47,6 +83,9 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="••••••••"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
