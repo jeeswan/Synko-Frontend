@@ -1,5 +1,6 @@
 import React from "react"
 import { login } from '../services/auth'
+import api from "../services/api";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +23,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      await api.get('/sanctum/csrf-cookie'); // Get CSRF cookie
       const response = await login(formData);
       console.log("SUCCESS:", response.data);
       navigate('/dashboard');

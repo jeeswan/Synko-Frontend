@@ -1,12 +1,7 @@
-const colorMap = {
-  blue: "bg-blue-600",
-  green: "bg-green-600",
-  red: "bg-red-600",
-  yellow: "bg-yellow-400",
-};
-
 const ProjectCard = ({ project }) => {
-  const progress = Math.round((project.completed / project.total) * 100);
+  const progress = project.total > 0
+    ? Math.round((project.completed / project.total) * 100)
+    : 0;
 
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition">
@@ -14,8 +9,8 @@ const ProjectCard = ({ project }) => {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
-          <span className={`w-3 h-3 rounded-full ${colorMap[project.color]}`} />
-          <h3 className="text-sm font-semibold">{project.title}</h3>
+          <span className={`w-3 h-3 rounded-full ${project.color}`} />
+          <h3 className="text-sm font-semibold">{project.name}</h3>
         </div>
 
         <div className="flex items-center gap-3 text-gray-400">
@@ -47,7 +42,7 @@ const ProjectCard = ({ project }) => {
 
       {/* Members */}
       <div className="flex items-center gap-2 mt-4">
-        {project.members.map((m, i) => (
+        {project.members?.map((m, i) => (
           <div
             key={i}
             className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center"

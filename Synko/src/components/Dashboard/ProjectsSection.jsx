@@ -1,7 +1,9 @@
 import ProjectCard from "./ProjectCard";
-import { projects } from "../../data/ProjectsData";
+import { useProject } from "../../context/ProjectContext";
 
 const ProjectsSection = () => {
+  const { projects=[], loading } = useProject();
+  if (loading) return null;
   return (
     <section className="mt-8">
       <h2 className="text-lg font-semibold mb-4">Projects</h2>

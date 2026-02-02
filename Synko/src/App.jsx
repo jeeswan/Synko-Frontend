@@ -41,7 +41,7 @@ function App() {
         {/* Page content */}
         <div className={`flex-1 overflow-y-auto ${!location.pathname.startsWith('/project') ? 'px-9 py-5' : ''}`}>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/project/:id" element={<ProjectDashboard />} />
             <Route path="/login" element={<Login />} />

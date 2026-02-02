@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useProject } from "../context/ProjectContext";
 
 const colors = [
   "bg-blue-600",
@@ -13,25 +14,33 @@ const colors = [
 ];
 
 const CreateProject = ({ onClose }) => {
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const { createProject } = useProject();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedColor, setSelectedColor] = useState("bg-blue-600");
+
+  const handleCreateProject = async () => {
+    if (!name.trim()) return;
+    
+    await createProject({ name, description, color: selectedColor });
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      
       {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/40"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative bg-white w-[420px] rounded-xl p-6 shadow-lg z-10">
-        
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Create New Project</h2>
           <button onClick={onClose}>
-            <X className="text-gray-500 hover:text-gray-800 cursor-pointer" size={18} />
+            <X
+              className="text-gray-500 hover:text-gray-800 cursor-pointer"
+              size={18}
+            />
           </button>
         </div>
 
@@ -41,6 +50,8 @@ const CreateProject = ({ onClose }) => {
             <label className="text-sm font-medium">Project Name</label>
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Enter Project name"
               className="mt-1 w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -50,6 +61,8 @@ const CreateProject = ({ onClose }) => {
             <label className="text-sm font-medium">Description</label>
             <textarea
               rows="3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter project description (optional)"
               className="mt-1 w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -59,7 +72,7 @@ const CreateProject = ({ onClose }) => {
           <div>
             <label className="text-sm font-medium block mb-2">Color</label>
             <div className="flex gap-2 flex-wrap">
-              {colors.map(color => (
+              {colors.map((color) => (
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
@@ -80,9 +93,9 @@ const CreateProject = ({ onClose }) => {
           >
             Cancel
           </button>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
-          >
+          <button 
+          onClick={handleCreateProject}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
             Create Project
           </button>
         </div>
