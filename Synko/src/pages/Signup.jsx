@@ -136,12 +136,12 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] transition"
+              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] cursor-pointer transition"
             >
               Sign Up
             </button>
             <p className="text-center text-sm text-gray-500 mt-1">
-              Already have an account? <a href="/login" className="text-blue-600 hover:underline">Log in</a>
+              Already have an account? <a href="/login" className="text-blue-600 hover:underline cursor-pointer">Log in</a>
             </p>
           </form>
         </div>

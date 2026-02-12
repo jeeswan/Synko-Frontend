@@ -1,15 +1,15 @@
 import React from "react"
 import { login } from '../services/auth'
 import api from "../services/api";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useProject } from '../context/ProjectContext';
 
 const Login = () => {
+  const { setUser } = useProject();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +21,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('')
 
     try {
-      await api.get('/sanctum/csrf-cookie'); // Get CSRF cookie
-      const response = await login(formData);
-      console.log("SUCCESS:", response.data);
-      navigate('/dashboard');
-    } catch (error) {
-      if (error.response) {
-        console.log("SERVER ERROR:", error.response.data);
-      } else {
-        console.log("NETWORK ERROR:", error.message);
-      }
+      const res = await login(formData);
+      setUser(res.user || res.data.user); // update context
+      navigate('/dashboard'); // or /projects if you prefer
+    } catch (err) {
+      console.error(err);
+      setError('Invalid credentials');
     }
   };
 
@@ -94,12 +91,13 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] transition"
+              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] cursor-pointer transition"
             >
               Log In
             </button>
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             <p className="text-center text-sm text-gray-500 mt-1">
-              Don't have an account? <a href="/signup" className="text-blue-600 hover:underline">Sign up</a>
+              Don't have an account? <a href="/signup" className="text-blue-600 hover:underline cursor-pointer">Sign up</a>
             </p>
           </form>
         </div>

@@ -1,9 +1,11 @@
-import api from "./api";
+// auth.js
+import apiAuth from "./apiAuth";
 
-export const signup = (data) => {
-  return api.post("/signup", data);
+export const login = async (data) => {
+  await apiAuth.get("/sanctum/csrf-cookie", { withCredentials: true });
+  return apiAuth.post("/api/login", data, { withCredentials: true });
 };
 
-export const login = (data) => {
-  return api.post("/login", data);
-};
+export const signup = (data) => apiAuth.post("/api/signup", data, { withCredentials: true });
+export const logout = () => apiAuth.post("/api/logout", {}, { withCredentials: true });
+export const fetchUser = () => apiAuth.get("/api/user", { withCredentials: true });
