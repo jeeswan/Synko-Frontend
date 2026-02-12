@@ -46,6 +46,7 @@ function App() {
             <Route path="/project/:id" element={<ProjectDashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path='/logout' element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
       </div>
