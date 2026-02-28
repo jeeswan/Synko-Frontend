@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import { signup } from '../services/auth'
 import { useNavigate } from 'react-router-dom';
+import { signupUser } from '../services/apiService';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -12,29 +12,21 @@ const Signup = () => {
     password_confirmation: ''
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await signup(formData);
-      console.log("SUCCESS:", response.data);
-      navigate('/login');
-    } catch (error) {
-      if (error.response) {
-        console.log("SERVER ERROR:", error.response.data);
-      } else {
-        console.log("NETWORK ERROR:", error.message);
-      }
-    }
-  };
+  try {
+    const res = await signupUser(formData);
+    const { token } = res.data;
+
+    localStorage.setItem("token", token);
+    navigate("/login");
+
+  } catch (err) {
+    console.log(err.response?.data);
+  }
+};
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -73,7 +65,7 @@ const Signup = () => {
                     placeholder="First Name"
                     name="first_name"
                     value={formData.first_name}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
                 </div>
@@ -87,7 +79,7 @@ const Signup = () => {
                     placeholder="Last Name"
                     name="last_name"
                     value={formData.last_name}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
                 </div>
@@ -102,7 +94,7 @@ const Signup = () => {
                 placeholder="you@example.com"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -116,7 +108,7 @@ const Signup = () => {
                 placeholder="••••••••"
                 name="password"
                 value={formData.password}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -129,7 +121,7 @@ const Signup = () => {
                 type="password"
                 name="password_confirmation"
                 value={formData.password_confirmation}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, password_confirmation: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>

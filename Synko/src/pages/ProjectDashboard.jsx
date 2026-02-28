@@ -4,9 +4,13 @@ import KanbanBoard from '../components/ProjectDashboard/KanbanBoard'
 
 const ProjectDashboard = () => {
   return (
-    <div>
+    // full-height container so we can scroll the board independently
+    <div className="flex flex-col h-full">
       <ProjectHeader />
-      <KanbanBoard />
+      {/* keep the header fixed, make the board fill remaining space */}
+      <div className="flex-1 overflow-auto">
+        <KanbanBoard />
+      </div>
     </div>
   )
 }

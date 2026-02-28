@@ -1,10 +1,18 @@
+import { useNavigate } from 'react-router-dom';
+
 const ProjectCard = ({ project }) => {
+  const navigate = useNavigate();
   const progress = project.total > 0
     ? Math.round((project.completed / project.total) * 100)
     : 0;
 
+    const handleClick = () => {
+      navigate(`/project/${project.id}`); // go to project dashboard
+    };
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition">
+    <div 
+    onClick={handleClick}
+    className="bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition">
       
       {/* Header */}
       <div className="flex justify-between items-start">

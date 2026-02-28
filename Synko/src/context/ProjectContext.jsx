@@ -1,62 +1,69 @@
-import React, { createContext, use, useContext, useEffect, useState } from 'react'
-import api from "../services/api";
-import apiAuth from '../services/apiAuth';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import api from "../services/api"; // your axios instance with token interceptor
 
 const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const fetchProjects = async () => {
-        try {
-            await api.get('/sanctum/csrf-cookie', { withCredentials: true }); // Ensure CSRF cookie is set
-            const res = await api.get('/projects', { 
-                withCredentials: true,
-            });
-            setProjects(res.data.data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching projects:', error);
-            setLoading(false);
-        }
-    };
-        
-    const createProject = async (payload) => {
-        try {
-            await apiAuth.get('/sanctum/csrf-cookie', { withCredentials: true }); // Ensure CSRF cookie is set
-            const res = await api.post('projects', payload, { withCredentials: true });
-            setProjects(prev => [...prev, res.data.data]);
-        } catch (error) {
-            console.error('Error creating project:', error);
-        }
-    };
+  // Fetch projects from backend
+  const fetchProjects = async () => {
+    try {
+      const res = await api.get("/projects"); // axios handles Bearer token automatically
+      setProjects(res.data.data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const checkUser = async () => {
-        try {
-            await apiAuth.get('/sanctum/csrf-cookie', { withCredentials: true }); // Ensure CSRF cookie is set
-            // const res = await api.get('/user', { withCredentials: true }); // API returns current user
-            // setUser(res.data);
-            // if (res.data) await fetchProjects();
-        } catch {
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
-    };
-        
-    useEffect(() => {
-        if (user) {
-        fetchProjects(); // fetch projects only if user is set
-        }
-    }, [user]);
+  // Create a new project
+  const createProject = async (payload) => {
+    try {
+      const res = await api.post("/projects", payload);
+      setProjects((prev) => [...prev, res.data.data]);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
+  };
+
+  // Check user (on app load)
+  const checkUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await api.get("/user");
+      setUser(res.data);
+    } catch (error) {
+      setUser(null);
+      localStorage.removeItem("token"); // auto logout if token invalid
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchProjects();
+  }, [user]);
 
   return (
-    <ProjectContext.Provider value={{ user, setUser, projects, loading, createProject }}>
+    <ProjectContext.Provider
+      value={{ user, setUser, projects, loading, createProject }}
+    >
       {children}
     </ProjectContext.Provider>
-  )
-}
+  );
+};
 
 export const useProject = () => useContext(ProjectContext);

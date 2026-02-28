@@ -39,7 +39,12 @@ function App() {
         )}
 
         {/* Page content */}
-        <div className={`flex-1 overflow-y-auto ${!location.pathname.startsWith('/project') ? 'px-9 py-5' : ''}`}>
+        {/* for project pages we let the inner component handle scrolling so we hide the outer scroll */}
+        <div className={`${
+          location.pathname.startsWith('/project')
+            ? 'flex-1 overflow-hidden'
+            : 'flex-1 overflow-y-auto px-9 py-5'
+        }`}>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />

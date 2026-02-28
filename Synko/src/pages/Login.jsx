@@ -1,9 +1,8 @@
 import React from "react"
-import { login } from '../services/auth'
-import api from "../services/api";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '../context/ProjectContext';
+import { loginUser } from "../services/apiService";
 
 const Login = () => {
   const { setUser } = useProject();
@@ -20,18 +19,22 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('')
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await login(formData);
-      setUser(res.user || res.data.user); // update context
-      navigate('/dashboard'); // or /projects if you prefer
-    } catch (err) {
-      console.error(err);
-      setError('Invalid credentials');
-    }
-  };
+  try {
+    const res = await loginUser(formData);
+
+    const { token, user } = res.data;
+
+    localStorage.setItem("token", token);
+    setUser(user);
+    navigate("/dashboard");
+
+  } catch (err) {
+    setError(err.response?.data?.message || "Invalid credentials");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
