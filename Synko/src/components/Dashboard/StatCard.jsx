@@ -3,9 +3,9 @@ import StatSection from './StatSection'
 
 const StatCard = ({ label, value, icon: Icon, color }) => {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm flex justify-between items-start hover:shadow-xl transition-shadow">
+    <div className="bg-gray-100 border border-gray-200 rounded-xl p-6 shadow-md flex justify-between items-start hover:shadow-xl transition-shadow">
       <div>
-        <p className="text-gray-500">{label}</p>
+        <p className="text-gray-700">{label}</p>
         <h2 className="text-2xl font-semibold mt-1">{value}</h2>
       </div>
 

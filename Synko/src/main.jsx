@@ -4,11 +4,14 @@ import './index.css';
 import App from './App.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import { ProjectProvider } from './context/ProjectContext.jsx';
+import { TaskProvider } from './context/TaskContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ProjectProvider>
-      <App />   
+      <TaskProvider>
+        <App />
+      </TaskProvider>
     </ProjectProvider>
   </BrowserRouter>,
 );

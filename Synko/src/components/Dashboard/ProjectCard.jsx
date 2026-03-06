@@ -12,7 +12,7 @@ const ProjectCard = ({ project }) => {
   return (
     <div 
     onClick={handleClick}
-    className="bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition">
+    className="bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-xl transition">
       
       {/* Header */}
       <div className="flex justify-between items-start">

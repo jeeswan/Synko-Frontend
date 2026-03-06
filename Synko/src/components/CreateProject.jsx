@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useProject } from "../context/ProjectContext";
 
 const colors = [
@@ -14,6 +15,7 @@ const colors = [
 ];
 
 const CreateProject = ({ onClose }) => {
+  const navigate = useNavigate();
   const { createProject } = useProject();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -22,7 +24,13 @@ const CreateProject = ({ onClose }) => {
   const handleCreateProject = async () => {
     if (!name.trim()) return;
     
-    await createProject({ name, description, color: selectedColor });
+    const newProject = await createProject({
+      name,
+      description,
+      color: selectedColor,
+    });
+
+    navigate(`/project/${newProject.id}`);
     onClose();
   };
 
@@ -89,13 +97,13 @@ const CreateProject = ({ onClose }) => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded-md text-sm"
+            className="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-100"
           >
             Cancel
           </button>
           <button 
           onClick={handleCreateProject}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer hover:bg-blue-700">
             Create Project
           </button>
         </div>

@@ -14,15 +14,15 @@ function App() {
   const hideSidebar = location.pathname.startsWith('/login') || location.pathname.startsWith('/signup')
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar: only render if visible and not on login/signup */}
       {!hideSidebar && sidebarVisible && <Sidebar />}
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col bg-gray-100">
+      <div className="flex-1 flex flex-col bg-white overflow-hidden">
         {/* Top bar */}
         {!hideSidebar && (
-          <div className="w-full flex items-center justify-between px-5 h-16 bg-gray-100 border-b-2 border-gray-300 shadow z-50">
+          <div className="w-full flex items-center justify-between px-5 h-16 bg-white border-b-2 border-gray-300 shadow z-50">
             {/* Sidebar toggle button */}
             <button
               onClick={() => setSidebarVisible(!sidebarVisible)}

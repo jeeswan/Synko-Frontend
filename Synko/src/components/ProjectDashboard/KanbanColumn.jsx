@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 
 const KanbanColumn = ({ column }) => {
   return (
-    <div className="w-80 bg-gray-100 rounded-xl p-4 flex-shrink-0">
+    <div className="w-80 bg-gray-100 rounded-xl p-4 flex-shrink-0 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-medium">
           {column.title}{" "}

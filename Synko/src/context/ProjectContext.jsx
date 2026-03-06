@@ -24,7 +24,12 @@ export const ProjectProvider = ({ children }) => {
   const createProject = async (payload) => {
     try {
       const res = await api.post("/projects", payload);
-      setProjects((prev) => [...prev, res.data.data]);
+
+      const project = res.data.data;
+
+      setProjects((prev) => [...prev, project]);
+
+      return project; 
     } catch (error) {
       console.error("Error creating project:", error);
     }
@@ -66,4 +71,8 @@ export const ProjectProvider = ({ children }) => {
   );
 };
 
-export const useProject = () => useContext(ProjectContext);
+export const useProject = () => {
+  const context = useContext(ProjectContext);
+  if (!context) throw new Error("useProject must be used inside ProjectProvider");
+  return context;
+};
