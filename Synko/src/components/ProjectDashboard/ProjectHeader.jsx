@@ -63,7 +63,7 @@ const ProjectHeader = () => {
 
         <button
           onClick={() => setOpenTask(true)}
-          className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md text-sm">
+          className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-md cursor-pointer text-sm hover:bg-blue-600 transition">
           <Plus size={16} /> Add Task
         </button>
       </div>

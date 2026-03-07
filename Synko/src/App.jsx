@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import Archived from './pages/Archived.jsx'
 import ProjectDashboard from './pages/ProjectDashboard.jsx'
 import Sidebar from './components/Sidebar/Sidebar.jsx'
 import { Columns2, Moon } from 'lucide-react'
@@ -49,6 +50,7 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/project/:id" element={<ProjectDashboard />} />
+            <Route path='/archived' element={<Archived />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path='/logout' element={<Navigate to="/login" replace />} />

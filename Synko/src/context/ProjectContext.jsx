@@ -20,6 +20,23 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  // Star a project
+  const toggleStarProject = async (projectId) => {
+    try {
+      const res = await api.patch(`/projects/${projectId}/star`);
+
+      const updatedProject = res.data.data;
+
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === projectId ? { ...p, is_starred: updatedProject.is_starred } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling star:", error);
+    }
+  };
+
   // Create a new project
   const createProject = async (payload) => {
     try {
@@ -62,9 +79,10 @@ export const ProjectProvider = ({ children }) => {
     if (user) fetchProjects();
   }, [user]);
 
+  const starredProjects = projects.filter((p) => p.is_starred);
   return (
     <ProjectContext.Provider
-      value={{ user, setUser, projects, loading, createProject }}
+      value={{ user, setUser, projects, loading, createProject, toggleStarProject, starredProjects }}
     >
       {children}
     </ProjectContext.Provider>

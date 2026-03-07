@@ -1,29 +1,82 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useTask } from "../../context/TaskContext";
+import { Star, MoreHorizontal, Archive, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useProject } from "../../context/ProjectContext";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, onDelete, onArchived }) => {
   const navigate = useNavigate();
-  const progress = project.total > 0
-    ? Math.round((project.completed / project.total) * 100)
-    : 0;
+  const { tasks } = useTask();
+  const { toggleStarProject } = useProject();
+  const [openMenu, setOpenMenu] = useState(false);
 
-    const handleClick = () => {
-      navigate(`/project/${project.id}`); // go to project dashboard
-    };
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(task => task.status === "Done").length;
+
+  const progress =
+    totalTasks > 0
+      ? Math.round((completedTasks / totalTasks) * 100)
+      : 0;
+
+  const handleClick = () => {
+    navigate(`/project/${project.id}`);
+  };
+
   return (
-    <div 
-    onClick={handleClick}
-    className="bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-xl transition">
-      
+    <div
+      onClick={handleClick}
+      className="relative bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-xl transition"
+    >
       {/* Header */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
-          <span className={`w-3 h-3 rounded-full ${project.color}`} />
+          <span className={`w-3 h-3 rounded-full ${project?.color}`} />
           <h3 className="text-sm font-semibold">{project.name}</h3>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-400">
-          <span className="cursor-pointer">★</span>
-          <span className="cursor-pointer">⋯</span>
+        <div className="flex items-center gap-3 text-gray-700 relative">
+          <span
+            className={`cursor-pointer ${project.is_starred ? "text-yellow-300" : "text-gray-700"}`}
+            onClick={(e) => {
+              e.stopPropagation();       
+              toggleStarProject(project.id);
+            }}
+          >
+            <Star size={16} />
+          </span>
+
+          <span
+            className="cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenu(!openMenu);
+            }}
+          >
+            <MoreHorizontal size={16} />
+          </span>
+
+          {openMenu && (
+            <div
+              className="absolute right-0 top-6 w-32 bg-gray-100 border border-gray-200 rounded-md shadow-md z-20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                onClick={onArchived}
+                className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-200 rounded-md cursor-pointer"
+              >
+                <Archive size={14} />
+                Archive
+              </div>
+
+              <div
+                onClick={onDelete}
+                className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-200 text-gray-700 cursor-pointer"
+              >
+                <Trash2 size={14} />
+                Delete
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -35,7 +88,7 @@ const ProjectCard = ({ project }) => {
       {/* Progress info */}
       <div className="flex justify-between text-xs text-gray-500 mt-4">
         <span>
-          {project.completed} out of {project.total} tasks
+          {completedTasks} out of {totalTasks} tasks
         </span>
         <span>{progress}%</span>
       </div>

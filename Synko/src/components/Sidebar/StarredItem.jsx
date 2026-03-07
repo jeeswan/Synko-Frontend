@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-const ProjectItem = ({ color, name, projectId }) => {
+const StarredItem = ({ color, name, projectId }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,4 +31,4 @@ const ProjectItem = ({ color, name, projectId }) => {
   );
 };
 
-export default ProjectItem;
+export default StarredItem;
