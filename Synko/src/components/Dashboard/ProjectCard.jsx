@@ -1,22 +1,41 @@
 import { useNavigate } from "react-router-dom";
 import { useTask } from "../../context/TaskContext";
 import { Star, MoreHorizontal, Archive, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useProject } from "../../context/ProjectContext";
 
-const ProjectCard = ({ project, onDelete, onArchived }) => {
+const ProjectCard = ({ project }) => {
   const navigate = useNavigate();
   const { tasks } = useTask();
-  const { toggleStarProject } = useProject();
+  const { toggleStarProject, deleteProject, archiveProject } = useProject();
   const [openMenu, setOpenMenu] = useState(false);
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(task => task.status === "Done").length;
+  const { totalTasks, completedTasks, progress } = useMemo(() => {
+    const projectTasks = (tasks || []).filter(
+      (t) => Number(t.project_id) === Number(project.id)
+    );
 
-  const progress =
-    totalTasks > 0
-      ? Math.round((completedTasks / totalTasks) * 100)
-      : 0;
+    const total = projectTasks.length;
+    const done = projectTasks.filter(t => t.status === "Done").length;
+
+    return {
+      totalTasks: total,
+      completedTasks: done,
+      progress: total ? Math.round((done / total) * 100) : 0
+    };
+  }, [tasks, project.id]);
+
+  const handleArchive = async (e) => {
+    e.stopPropagation();
+    await archiveProject(project.id);
+    setOpenMenu(false);
+  }
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    deleteProject(project.id);
+    setOpenMenu(false);
+  };
 
   const handleClick = () => {
     navigate(`/project/${project.id}`);
@@ -25,7 +44,7 @@ const ProjectCard = ({ project, onDelete, onArchived }) => {
   return (
     <div
       onClick={handleClick}
-      className="relative bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-xl transition"
+      className="relative bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-md cursor-pointer hover:shadow-xl transition"
     >
       {/* Header */}
       <div className="flex justify-between items-start">
@@ -36,13 +55,17 @@ const ProjectCard = ({ project, onDelete, onArchived }) => {
 
         <div className="flex items-center gap-3 text-gray-700 relative">
           <span
-            className={`cursor-pointer ${project.is_starred ? "text-yellow-300" : "text-gray-700"}`}
+            className="cursor-pointer"
             onClick={(e) => {
-              e.stopPropagation();       
+              e.stopPropagation();
               toggleStarProject(project.id);
             }}
           >
-            <Star size={16} />
+            <Star
+              size={16}
+              className={project.is_starred ? "text-yellow-400" : "text-gray-500"}
+              fill={project.is_starred ? "currentColor" : "none"}
+            />
           </span>
 
           <span
@@ -61,7 +84,7 @@ const ProjectCard = ({ project, onDelete, onArchived }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <div
-                onClick={onArchived}
+                onClick={handleArchive}
                 className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-200 rounded-md cursor-pointer"
               >
                 <Archive size={14} />
@@ -69,7 +92,7 @@ const ProjectCard = ({ project, onDelete, onArchived }) => {
               </div>
 
               <div
-                onClick={onDelete}
+                onClick={handleDelete}
                 className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-200 text-gray-700 cursor-pointer"
               >
                 <Trash2 size={14} />

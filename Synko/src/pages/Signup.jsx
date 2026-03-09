@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 import { signupUser } from '../services/apiService';
+import assets from "../assets/assets";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -32,18 +33,27 @@ const Signup = () => {
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         
         {/* Left Section */}
-        <div className="hidden md:block">
-          <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">
-            Create an Account
-          </h1>
-          <p className="mt-4 text-gray-600 max-w-sm">
-            Get started with Synko to streamline your content management and boost productivity.
-          </p>
+        <div className="hidden md:flex flex-col justify-between h-full py-8">
 
-          <div className="mt-10 text-sm text-gray-400">
-            Synko CMS © {new Date().getFullYear()}
+          {/* Top Brand Area */}
+          <div>
+            <img
+              src={assets.logo_synko}
+              alt="Synko Logo"
+              className="w-40 mb-4"
+            />
+              <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">
+                Create an Account
+              </h1>
+              <p className="mt-4 text-gray-600 max-w-sm">
+                Get started with Synko to streamline your content management and boost productivity.
+              </p>
+
+              <div className="mt-10 text-sm text-gray-400">
+                Synko CMS © {new Date().getFullYear()}
+              </div>
+            </div>
           </div>
-        </div>
 
         {/* Right Section */}
         <div className="bg-white p-8 rounded-2xl shadow-xl">

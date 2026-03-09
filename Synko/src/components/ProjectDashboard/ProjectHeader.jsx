@@ -12,7 +12,7 @@ const getInitials = (name) => {
 
 const ProjectHeader = () => {
   const { id } = useParams();
-  const { projects } = useProject();
+  const { projects, toggleStarProject } = useProject();
 
   const project = projects.find((p) => p.id === Number(id));
   
@@ -29,7 +29,16 @@ const ProjectHeader = () => {
         <h1 className="text-xl font-semibold">
           {project?.name || "Project"}
         </h1>
-        <Star size={18} className="text-yellow-400" />
+        <span
+            className="cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleStarProject(project.id);
+            }}
+          >
+          <Star size={18} className={project?.is_starred ? "text-yellow-400" : "text-gray-500"}
+              fill={project?.is_starred ? "currentColor" : "none"} />
+        </span>
       </div>
 
       <div className="flex items-center gap-3">

@@ -6,7 +6,7 @@ import api from "../services/api";
 
 const CreateTask = ({ onClose, task }) => {
   const { id } = useParams();
-  const { createTask, updateTask } = useTask();
+  const { createTask, updateTask, deleteTask, archiveTask } = useTask();
   const [searchUser, setSearchUser] = useState("");
   const [userResults, setUserResults] = useState([]);
 
@@ -92,6 +92,30 @@ const CreateTask = ({ onClose, task }) => {
     } catch (err) {
       console.error(err);
       alert("Failed to submit task");
+    }
+  };
+
+  const handleArchiveTask = async () => {
+    if (!task) return;
+
+    try {
+      await archiveTask(task.id);
+      onClose();
+    } catch (err) {
+      alert("Failed to archive task");
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    if (!task) return; // only delete if editing
+    const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmDelete) return;
+
+    try {
+      await deleteTask(task.id);
+      onClose();
+    } catch (err) {
+      alert("Failed to delete task");
     }
   };
 
@@ -302,11 +326,11 @@ const CreateTask = ({ onClose, task }) => {
         {/* Footer */}
         <div className="flex justify-between pt-4 border-t mt-4">
             <div className="flex justify-start gap-3">
-                <div className="flex items-center gap-1 cursor-pointer text-gray-600 hover:text-gray-800">
+                <div className="flex items-center gap-1 cursor-pointer text-gray-600 hover:text-gray-800" onClick={handleArchiveTask}>
                     <Archive size={16} />
                     <span className="text-sm">Archive</span>
                 </div>
-                <div className="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800">
+                <div className="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800" onClick={handleDeleteTask}>
                     <Trash2 size={16} />
                     <span className="text-sm">Delete</span>
                 </div>

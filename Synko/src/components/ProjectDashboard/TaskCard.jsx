@@ -7,8 +7,9 @@ const borderColors = {
 
 const TaskCard = ({ task, onClick }) => {
   const borderColor = borderColors[task.priority] || "border-gray-300";
+
   return (
-    <div onClick={() => onClick && onClick(task)} className={`bg-white rounded-lg p-3 border-l-4 ${borderColor} shadow-sm`}>
+    <div onClick={() => onClick && onClick(task)} className={`bg-white rounded-lg p-3 border-l-4 ${borderColor} shadow-sm cursor-pointer`}>
       <p className="text-sm font-medium mb-2">{task.name}</p>
 
       {/* Labels */}

@@ -1,7 +1,7 @@
 import TaskCard from "./TaskCard";
 import { Plus } from "lucide-react";
 
-const KanbanColumn = ({ column }) => {
+const KanbanColumn = ({ column, onTaskClick }) => {
   return (
     <div className="w-80 bg-gray-100 rounded-xl p-4 flex-shrink-0 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
@@ -16,7 +16,7 @@ const KanbanColumn = ({ column }) => {
 
       <div className="space-y-4">
         {column.tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard key={task.id} task={task} onClick={onTaskClick} />
         ))}
       </div>
     </div>

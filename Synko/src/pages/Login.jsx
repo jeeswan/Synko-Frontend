@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useProject } from '../context/ProjectContext';
 import { loginUser } from "../services/apiService";
+import assets from "../assets/assets";
 
 const Login = () => {
   const { setUser } = useProject();
@@ -39,18 +40,24 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        
         {/* Left Section */}
-        <div className="hidden md:block">
-          <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">
-            Welcome back
-          </h1>
-          <p className="mt-4 text-gray-600 max-w-sm">
-            Log in to manage your workspace, track progress, and stay in control.
-          </p>
+        <div className="hidden md:flex flex-col justify-between h-full py-8">
+          <div>
+            <img
+              src={assets.logo_synko}
+              alt="Synko Logo"
+              className="w-40 mb-4"
+            />
+            <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">
+              Welcome back
+            </h1>
 
-          <div className="mt-10 text-sm text-gray-400">
-            Synko CMS © {new Date().getFullYear()}
+            <p className="mt-4 text-gray-600 max-w-sm">
+              Log in to manage your workspace, track progress, and stay in control.
+            </p>
+            <div className="mt-10 text-sm text-gray-400">
+              Synko CMS © {new Date().getFullYear()}
+            </div>
           </div>
         </div>
 

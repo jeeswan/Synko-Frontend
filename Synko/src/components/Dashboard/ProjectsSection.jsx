@@ -1,8 +1,20 @@
 import ProjectCard from "./ProjectCard";
 import { useProject } from "../../context/ProjectContext";
+import { useTask } from "../../context/TaskContext";
+import { useEffect } from "react";
 
 const ProjectsSection = () => {
-  const { projects=[], loading } = useProject();
+  const { projects, loading } = useProject();
+  const { getTasks } = useTask();
+
+  useEffect(() => {
+    if (projects.length) {
+      projects.forEach((project) => {
+        getTasks(project.id);
+      });
+    }
+  }, [projects]);
+
   if (loading) return null;
   return (
     <section className="mt-8">

@@ -52,6 +52,30 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  const archiveProject = async (projectId) => {
+    try {
+      const res = await api.patch(`/projects/${projectId}/archive`);
+      const updatedProject = res.data.data; // should contain is_archived: true
+
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === projectId ? { ...p, is_archived: updatedProject.is_archived } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error archiving project:", error);
+    }
+  };
+
+  const deleteProject = async (projectId) => {
+    try {
+      await api.delete(`/projects/${projectId}`);
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
   // Check user (on app load)
   const checkUser = async () => {
     const token = localStorage.getItem("token");
@@ -82,7 +106,7 @@ export const ProjectProvider = ({ children }) => {
   const starredProjects = projects.filter((p) => p.is_starred);
   return (
     <ProjectContext.Provider
-      value={{ user, setUser, projects, loading, createProject, toggleStarProject, starredProjects }}
+      value={{ user, setUser, projects, loading, createProject, toggleStarProject, starredProjects, deleteProject, archiveProject }}
     >
       {children}
     </ProjectContext.Provider>

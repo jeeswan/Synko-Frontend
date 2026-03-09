@@ -46,8 +46,31 @@ export const TaskProvider = ({ children }) => {
   }
 };
 
+const archiveTask = async (taskId) => {
+  try {
+    const res = await api.patch(`/tasks/${taskId}/archive`);
+    const archivedTask = res.data.data;
+    setTasks((prev) => prev.filter((t) => t.id !== taskId));
+    return archivedTask;
+  } catch (err) {
+    console.error("Failed to archive task:", err);
+    throw err;
+  }
+};
+
+const deleteTask = async (taskId) => {
+  try {
+    await api.delete(`/tasks/${taskId}`);
+
+    setTasks((prev) => prev.filter((t) => t.id !== taskId));
+  } catch (err) {
+    console.error("Failed to delete task:", err);
+    throw err;
+  }
+};
+
   return (
-    <TaskContext.Provider value={{ tasks, createTask, getTasks, updateTask }}>
+    <TaskContext.Provider value={{ tasks, createTask, getTasks, updateTask, deleteTask, archiveTask }}>
       {children}
     </TaskContext.Provider>
   );

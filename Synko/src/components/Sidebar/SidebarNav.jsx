@@ -15,11 +15,13 @@ const SidebarNav = () => {
       <NavItem icon={<LayoutGrid size={18} />} label="Dashboard" to="/dashboard" className="text-gray-600 hover:bg-gray-300" />
 
       {/* Starred (not a link, just label) */}
-      <div className="flex items-center gap-3 px-3 py-2 text-gray-600 cursor-default">
-        <Star size={18} />
-        <span>Starred</span>
+      <div>
+        <div className="flex items-center gap-3 px-3 py-2 text-gray-600 cursor-default">
+          <Star size={18} />
+          <span>Starred</span>
+        </div>
+        <StarredList />
       </div>
-      <StarredList />
 
       {/* Projects (expandable) */}
       <div>
