@@ -6,9 +6,11 @@ const StarredList = () => {
 
   if (loading) return null;
 
+  const unarchivedStarredProjects = starredProjects.filter(p => !p.is_archived);
+
   return (
     <div>
-      {starredProjects.map((project) => (
+      {unarchivedStarredProjects.map((project) => (
         <StarredItem
           key={project.id}
           color={project.color}

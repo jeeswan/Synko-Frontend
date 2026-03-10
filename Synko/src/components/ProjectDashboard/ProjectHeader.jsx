@@ -4,24 +4,36 @@ import CreateTask from '../CreateTask'
 import { useParams } from "react-router-dom";
 import { useProject } from "../../context/ProjectContext";
 
+import { useTask } from "../../context/TaskContext";
+
 const getInitials = (name) => {
+  if (!name) return "?";
   const parts = name.trim().split(" ");
   if (parts.length === 1) return parts[0][0].toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const ProjectHeader = () => {
-  const { id } = useParams();
-  const { projects, toggleStarProject } = useProject();
+const ProjectHeader = ({ projectId, searchQuery, setSearchQuery, showArchived, setShowArchived }) => {
+  const { projects, toggleStarProject, user } = useProject();
+  const { tasks } = useTask();
 
-  const project = projects.find((p) => p.id === Number(id));
+  const project = projects.find((p) => p.id === Number(projectId));
   
   const [openTask, setOpenTask] = useState(false);
-    const members = [
-        "Jeeswan Bajracharya",
-        "Riya Karki",
-        "Kunal Thapa",
-    ];
+
+  // Dynamic Members: current user + any distinct assigned users in this project's tasks
+  const projectTasks = tasks.filter((t) => t.project_id === Number(projectId));
+  const memberMap = new Map();
+  if (user) {
+    memberMap.set(user.id, user);
+  }
+  projectTasks.forEach(t => {
+    if (t.users) {
+      t.users.forEach(u => memberMap.set(u.id, u));
+    }
+  });
+  const members = Array.from(memberMap.values());
+
   return (
     <div className="w-full flex items-center justify-between px-5 h-16 bg-white border-b-2 border-gray-300 shadow z-50">
       <div className="flex items-center gap-3">
@@ -47,26 +59,39 @@ const ProjectHeader = () => {
           <input
             placeholder="Search tasks..."
             className="pl-9 pr-3 py-2 rounded-md border text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <button className="flex items-center gap-2 px-3 py-2 border rounded-md text-sm">
-          <Filter size={16} /> Filter
+        <button 
+          className={`flex items-center gap-2 px-3 py-2 border rounded-md text-sm ${showArchived ? 'bg-gray-100 border-gray-400 text-gray-800' : 'text-gray-600'} cursor-pointer`}
+          onClick={() => setShowArchived(!showArchived)}
+        >
+          <Filter size={16} /> 
+          {showArchived ? "Hide Archived" : "Show Archived"}
         </button>
 
         {/* Members */}
         <div className="flex items-center gap-2">
           <Users size={18} className="text-gray-600" />
           <div className="flex -space-x-2">
-            {members.map((name, i) => (
+            {members.slice(0, 5).map((m, i) => {
+              const displayName = m.name || `${m.first_name} ${m.last_name}`;
+              return (
               <div
-                key={i}
-                className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-medium flex items-center justify-center border-2 border-gray-100"
-                title={name}
+                key={m.id || i}
+                className="w-7 h-7 rounded-full bg-blue-600 text-white text-[10px] font-medium flex items-center justify-center border-2 border-white"
+                title={displayName}
               >
-                {getInitials(name)}
+                {getInitials(displayName)}
               </div>
-            ))}
+            )})}
+            {members.length > 5 && (
+              <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-600 text-xs font-medium flex items-center justify-center border-2 border-white">
+                +{members.length - 5}
+              </div>
+            )}
           </div>
         </div>
 

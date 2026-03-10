@@ -57,14 +57,14 @@ const Archived = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleRestore(project.id)}
-                  className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                 >
                   <ArrowDownCircleIcon className="w-4 h-4" />
                   Restore
                 </button>
                 <button
                   onClick={() => handleDelete(project.id)}
-                  className="flex items-center gap-1 px-3 py-1 border border-red-200 rounded text-sm text-red-600 hover:bg-red-50"
+                  className="flex items-center gap-1 px-3 py-1 border border-red-200 rounded text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                 >
                   <Trash className="w-4 h-4" />
                 </button>

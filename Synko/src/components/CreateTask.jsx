@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Archive, Tag, Trash2, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useTask } from "../context/TaskContext";
@@ -22,15 +22,20 @@ const CreateTask = ({ onClose, task }) => {
     userIds: task?.users?.map(u => u.id) || [],
   });
 
-  const [labelOptions, setLabelOptions] = useState([
-    { id: 1, name: "Bug"},
-    { id: 2, name: "Feature"},
-    { id: 3, name: "Enhancement"},
-    { id: 4, name: "Documentation"},
-    { id: 5, name: "Design"},
-  ]);
-
+  const [labelOptions, setLabelOptions] = useState([]);
   const [newLabel, setNewLabel] = useState("");
+  
+  useEffect(() => {
+    const fetchLabels = async () => {
+      try {
+        const res = await api.get("/labels");
+        setLabelOptions(res.data);
+      } catch (err) {
+        console.error("Failed to fetch labels", err);
+      }
+    };
+    fetchLabels();
+  }, []);
 
   const toggleLabel = (label) => {
     setFormData((prev) => {
@@ -47,16 +52,25 @@ const CreateTask = ({ onClose, task }) => {
     });
   };
 
-  const addNewLabel = () => {
+  const addNewLabel = async () => {
     if (!newLabel.trim()) return;
-    const label = { id: Date.now(), name: newLabel.trim() }; // temp id
-    setLabelOptions((prev) => [...prev, label]);
-    setFormData((prev) => ({
-      ...prev,
-      labels: [...prev.labels, label.name],
-      labelIds: [...prev.labelIds, label.id],
-    }));
-    setNewLabel("");
+    
+    try {
+      // Create label in backend
+      const res = await api.post("/labels", { name: newLabel.trim() });
+      const label = res.data; // real db label with id
+      
+      setLabelOptions((prev) => [...prev, label]);
+      setFormData((prev) => ({
+        ...prev,
+        labels: [...prev.labels, label.name],
+        labelIds: [...prev.labelIds, label.id],
+      }));
+      setNewLabel("");
+    } catch (err) {
+      console.error("Failed to create label", err);
+      alert("Failed to create label");
+    }
   };
 
   const handleChange = (e) => {
@@ -305,7 +319,7 @@ const CreateTask = ({ onClose, task }) => {
                     key={u.id}
                     className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full flex items-center gap-1"
                   >
-                    {u.name}
+                    {u.name || `${u.first_name} ${u.last_name}`}
                     <button
                       onClick={() =>
                         setFormData({

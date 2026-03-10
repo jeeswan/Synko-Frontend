@@ -7,9 +7,11 @@ const ProjectsSection = () => {
   const { projects, loading } = useProject();
   const { getTasks } = useTask();
 
+  const unarchivedProjects = projects.filter(p => !p.is_archived);
+
   useEffect(() => {
-    if (projects.length) {
-      projects.forEach((project) => {
+    if (unarchivedProjects.length) {
+      unarchivedProjects.forEach((project) => {
         getTasks(project.id);
       });
     }
@@ -21,7 +23,7 @@ const ProjectsSection = () => {
       <h2 className="text-lg font-semibold mb-4">Projects</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map(project => (
+        {unarchivedProjects.map(project => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>

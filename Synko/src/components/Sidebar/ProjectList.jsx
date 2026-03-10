@@ -6,9 +6,11 @@ const ProjectList = () => {
 
   if (loading) return null;
 
+  const unarchivedProjects = projects.filter(p => !p.is_archived);
+
   return (
     <div>
-      {projects.map((project) => (
+      {unarchivedProjects.map((project) => (
         <ProjectItem
           key={project.id}
           color={project.color}

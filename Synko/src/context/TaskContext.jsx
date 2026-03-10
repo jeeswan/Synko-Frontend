@@ -27,12 +27,15 @@ export const TaskProvider = ({ children }) => {
 
   const getTasks = async (projectId) => {
     const res = await api.get(`/projects/${projectId}/tasks`);
-    setTasks(res.data);
+    setTasks((prev) => [
+      ...prev.filter((t) => Number(t.project_id) !== Number(projectId)),
+      ...res.data
+    ]);
   };
 
   const updateTask = async (taskId, payload) => {
   try {
-    const res = await api.patch(`/tasks/${taskId}`, payload);
+    const res = await api.put(`/tasks/${taskId}`, payload);
     const updatedTask = res.data.data;
 
     setTasks((prev) =>

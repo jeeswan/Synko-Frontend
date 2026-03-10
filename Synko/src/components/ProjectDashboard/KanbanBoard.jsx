@@ -5,8 +5,7 @@ import { useParams } from "react-router-dom";
 import { useTask } from "../../context/TaskContext";
 import CreateTask from "../CreateTask";
 
-const KanbanBoard = () => {
-  const { id } = useParams();
+const KanbanBoard = ({ projectId, searchQuery, showArchived }) => {
   const { tasks, getTasks } = useTask();
 
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -18,11 +17,21 @@ const KanbanBoard = () => {
   };
 
   useEffect(() => {
-    getTasks(id);
-  }, [id]);
+    getTasks(projectId);
+  }, [projectId, getTasks]);
 
   // Group tasks by status
-  const projectTasks = tasks.filter((t) => t.project_id === Number(id));
+  let projectTasks = tasks.filter((t) => t.project_id === Number(projectId));
+
+  projectTasks = projectTasks.filter((t) =>
+    showArchived
+      ? (t.is_archived === 1 || t.is_archived === true)
+      : (t.is_archived === 0 || !t.is_archived)
+  );
+
+  if (searchQuery.trim()) {
+    projectTasks = projectTasks.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
 
   const columns = [
     { id: "todo", title: "To Do", tasks: projectTasks.filter(t => t.status === "To Do") },
