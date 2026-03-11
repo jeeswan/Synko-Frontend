@@ -5,6 +5,7 @@ import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Archived from './pages/Archived.jsx'
 import ProjectDashboard from './pages/ProjectDashboard.jsx'
+import Landing from './pages/LandingPage/Landing.jsx'
 import Sidebar from './components/Sidebar/Sidebar.jsx'
 import { Columns2, Moon } from 'lucide-react'
 
@@ -12,7 +13,7 @@ function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true)
   const location = useLocation()
 
-  const hideSidebar = location.pathname.startsWith('/login') || location.pathname.startsWith('/signup')
+  const hideSidebar = ['/login', '/signup', '/'].includes(location.pathname)
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -41,19 +42,16 @@ function App() {
 
         {/* Page content */}
         {/* for project pages we let the inner component handle scrolling so we hide the outer scroll */}
-        <div className={`${
-          location.pathname.startsWith('/project')
-            ? 'flex-1 overflow-hidden'
-            : 'flex-1 overflow-y-auto px-9 py-5'
-        }`}>
+        <div className="flex-1 overflow-y-auto">
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/dashboard" element={<div className="px-9 py-5"><Dashboard /></div>} />
             <Route path="/project/:id" element={<ProjectDashboard />} />
-            <Route path='/archived' element={<Archived />} />
+            <Route path="/archived" element={<div className="px-9 py-5"><Archived /></div>} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path='/logout' element={<Navigate to="/login" replace />} />
+            <Route path="/logout" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </div>

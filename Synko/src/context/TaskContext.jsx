@@ -1,10 +1,12 @@
 import { createContext, useContext, useState } from "react";
 import api from "../services/api"; 
+import { useProject } from "./ProjectContext";
 
 const TaskContext = createContext();
 
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
+  const { user } = useProject();
 
   const createTask = async (taskData) => {
   // Laravel expects label_ids and user_ids as arrays of integers
@@ -29,11 +31,27 @@ export const TaskProvider = ({ children }) => {
     const res = await api.get(`/projects/${projectId}/tasks`);
     setTasks((prev) => [
       ...prev.filter((t) => Number(t.project_id) !== Number(projectId)),
-      ...res.data
+      ...res.data || []
     ]);
   };
 
+  const canEditTask = (task, user) => {
+    if (!user) return false;
+
+    const isAssigned = task.users?.some(u => u.id === user.id);
+    const isTaskCreator = task.created_by === user.id;
+    const isProjectOwner = task.project?.user_id === user.id;
+
+    return isAssigned || isTaskCreator || isProjectOwner;
+  };
+
   const updateTask = async (taskId, payload) => {
+    const task = tasks.find(t => t.id === taskId);
+
+    if (!task || !canEditTask(task, user)) {
+      throw new Error("You do not have permission to edit this task.");
+    }
+
   try {
     const res = await api.put(`/tasks/${taskId}`, payload);
     const updatedTask = res.data.data;
@@ -50,6 +68,12 @@ export const TaskProvider = ({ children }) => {
 };
 
 const archiveTask = async (taskId) => {
+  const task = tasks.find(t => t.id === taskId);
+
+  if (!task || !canEditTask(task, user)) {
+    throw new Error("You do not have permission to archive this task.");
+  }
+  
   try {
     const res = await api.patch(`/tasks/${taskId}/archive`);
     const archivedTask = res.data.data;
@@ -62,6 +86,12 @@ const archiveTask = async (taskId) => {
 };
 
 const deleteTask = async (taskId) => {
+  const task = tasks.find(t => t.id === taskId);
+
+  if (!task || !canEditTask(task, user)) {
+    throw new Error("You do not have permission to delete this task.");
+  }
+
   try {
     await api.delete(`/tasks/${taskId}`);
 
@@ -73,7 +103,7 @@ const deleteTask = async (taskId) => {
 };
 
   return (
-    <TaskContext.Provider value={{ tasks, createTask, getTasks, updateTask, deleteTask, archiveTask }}>
+    <TaskContext.Provider value={{ tasks, createTask, getTasks, updateTask, deleteTask, archiveTask, canEditTask }}>
       {children}
     </TaskContext.Provider>
   );

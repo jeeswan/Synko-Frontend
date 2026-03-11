@@ -1,4 +1,6 @@
-import { Calendar } from "lucide-react";
+import { Calendar, Lock } from "lucide-react";
+import { useTask } from "../../context/TaskContext";
+import { useProject } from "../../context/ProjectContext";
 
 const borderColors = {
   Urgent: "border-red-500",
@@ -9,10 +11,20 @@ const borderColors = {
 
 const TaskCard = ({ task, onClick }) => {
   const borderColor = borderColors[task.priority] || "border-gray-300";
+  const { canEditTask } = useTask();
+  const { user } = useProject();
+
+  const canEdit = canEditTask(task, user);
 
   return (
-    <div onClick={() => onClick && onClick(task)} className={`bg-white rounded-xl p-4 border-l-4 ${borderColor} shadow-sm cursor-pointer hover:shadow-md transition`}>
-      <p className="text-sm font-medium mb-3 text-gray-800">{task.name}</p>
+    <div onClick={() => canEdit && onClick && onClick(task)} className={`bg-white rounded-xl p-4 border-l-4 ${borderColor} shadow-sm ${canEdit ? "cursor-pointer hover:shadow-md" : "cursor-not-allowed opacity-80"} hover:shadow-md transition`}>
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-sm font-medium text-gray-800">{task.name}</p>
+
+        {!canEdit && (
+          <Lock size={14} className="text-gray-400" />
+        )}
+      </div>
 
       {/* Labels */}
       {task.labels && task.labels.length > 0 && (

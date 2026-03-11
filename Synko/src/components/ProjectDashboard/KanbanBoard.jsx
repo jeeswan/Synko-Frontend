@@ -1,17 +1,23 @@
 // import { boardData } from "../../data/TaskData";
 import KanbanColumn from "./KanbanColumn";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useTask } from "../../context/TaskContext";
 import CreateTask from "../CreateTask";
+import { useProject } from "../../context/ProjectContext";
 
 const KanbanBoard = ({ projectId, searchQuery, showArchived }) => {
-  const { tasks, getTasks } = useTask();
+  const { tasks, getTasks, canEditTask } = useTask();
+  const { user } = useProject();
 
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
   const handleTaskClick = (task) => {
+    if (!canEditTask(task, user)) {
+      alert("You are not assigned to this task.");
+      return;
+    }
     setEditingTask(task);
     setShowTaskModal(true);
   };

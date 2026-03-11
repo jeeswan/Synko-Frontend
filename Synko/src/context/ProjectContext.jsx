@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import api from "../services/api"; // your axios instance with token interceptor
+import api from "../services/api"; 
 
 const ProjectContext = createContext();
 
