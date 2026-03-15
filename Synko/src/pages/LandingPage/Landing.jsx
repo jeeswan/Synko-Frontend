@@ -4,6 +4,8 @@ import Hero from './Hero'
 import DashboardPreview from './DashboardPreview'
 import WhatItHas from './WhatItHas'
 import HowItWorks from './HowItWorks'
+import GetStarted from './GetStarted'
+import Footer from './Footer'
 
 const Landing = () => {
   return (
@@ -13,6 +15,8 @@ const Landing = () => {
         <DashboardPreview />
         <WhatItHas />
         <HowItWorks />
+        <GetStarted />
+        <Footer />
     </div>
   )
 }

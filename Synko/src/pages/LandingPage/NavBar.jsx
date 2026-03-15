@@ -20,7 +20,9 @@ const NavBar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 w-full flex items-center justify-between px-15 py-10 h-16 border-b-2 border-gray-300 shadow z-50 transition-colors duration-300 ${
-        scrolled ? 'bg-white/80 backdrop-blur-lg' : 'bg-white'
+        scrolled
+        ? 'bg-white/20 backdrop-blur-lg'
+        : 'bg-white/90'  
       }`}
     >
       {/* Logo */}

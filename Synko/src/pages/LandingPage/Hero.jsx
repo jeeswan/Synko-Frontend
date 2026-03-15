@@ -16,7 +16,7 @@ const Hero = () => {
         <a href='/signup' className="items-center text-white rounded-3xl bg-blue-600 hover:bg-blue-700 py-3 px-6 text-lg font-semibold hover:text-gray-300 transition">
           Get Started <ArrowRight className="inline-block ml-2" />
         </a>
-        <a href="" className="rounded-3xl border border-gray-900 text-gray-700 hover:bg-gray-200 py-3 px-4 font-semibold">
+        <a href="#what-it-has" className="rounded-3xl border border-gray-900 text-gray-700 hover:bg-gray-200 py-3 px-4 font-semibold">
           Learn More
         </a>
       </div>
