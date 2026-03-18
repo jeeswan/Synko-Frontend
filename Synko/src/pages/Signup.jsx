@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 import { signupUser } from '../services/apiService';
 import assets from "../assets/assets";
+import { Loader2 } from "lucide-react";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -12,21 +13,25 @@ const Signup = () => {
     password: '',
     password_confirmation: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const res = await signupUser(formData);
-    const { token } = res.data;
+    try {
+      const res = await signupUser(formData);
+      const { token } = res.data;
 
-    localStorage.setItem("token", token);
-    navigate("/login");
+      localStorage.setItem("token", token);
+      navigate("/login");
 
-  } catch (err) {
-    console.log(err.response?.data);
-  }
-};
+    } catch (err) {
+      console.log(err.response?.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
@@ -138,9 +143,11 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] cursor-pointer transition"
+              disabled={isLoading}
+              className={`w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700 active:scale-[0.98] cursor-pointer'}`}
             >
-              Sign Up
+              {isLoading && <Loader2 className="animate-spin" size={18} />}
+              {isLoading ? 'Signing Up...' : 'Sign Up'}
             </button>
             <p className="text-center text-sm text-gray-500 mt-1">
               Already have an account? <a href="/login" className="text-blue-600 hover:underline cursor-pointer">Log in</a>

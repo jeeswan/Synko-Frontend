@@ -1,7 +1,8 @@
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "../context/ProjectContext";
+import { useDashboard } from "../context/DashboardController";
 
 const colors = [
   "bg-blue-600",
@@ -17,21 +18,33 @@ const colors = [
 const CreateProject = ({ onClose }) => {
   const navigate = useNavigate();
   const { createProject } = useProject();
+  const { fetchStats } = useDashboard();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedColor, setSelectedColor] = useState("bg-blue-600");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateProject = async () => {
     if (!name.trim()) return;
     
-    const newProject = await createProject({
-      name,
-      description,
-      color: selectedColor,
-    });
+    setIsLoading(true);
+    try {
+      const newProject = await createProject({
+        name,
+        description,
+        color: selectedColor,
+      });
 
-    navigate(`/project/${newProject.id}`);
-    onClose();
+      await fetchStats();
+
+      navigate(`/project/${newProject.id}`);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create project");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -97,14 +110,17 @@ const CreateProject = ({ onClose }) => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-100"
+            disabled={isLoading}
+            className="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-100 disabled:opacity-50"
           >
             Cancel
           </button>
           <button 
           onClick={handleCreateProject}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer hover:bg-blue-700">
-            Create Project
+          disabled={isLoading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+            {isLoading && <Loader2 className="animate-spin" size={16} />}
+            {isLoading ? "Creating..." : "Create Project"}
           </button>
         </div>
       </div>

@@ -16,6 +16,40 @@ const TaskCard = ({ task, onClick }) => {
 
   const canEdit = canEditTask(task, user);
 
+  const users = Array.isArray(task.users)
+    ? task.users
+    : Array.isArray(task.users?.data)
+    ? task.users.data
+    : [];
+
+  const getUserDisplayName = (u) => {
+    if (!u) return "";
+    return (
+      u.name ||
+      [u.first_name, u.last_name].filter(Boolean).join(" ") ||
+      u.email ||
+      u.username ||
+      ""
+    );
+  };
+
+  const getUserInitials = (u) => {
+    const displayName = getUserDisplayName(u).trim();
+    if (!displayName) {
+      const emailLocal = u?.email?.split("@")[0];
+      return (emailLocal?.[0] || "?").toUpperCase();
+    }
+
+    const parts = displayName.split(/\s+/);
+    if (parts.length === 1) {
+      return (parts[0]?.[0] || "?").toUpperCase();
+    }
+
+    return (
+      (parts[0]?.[0] || "") + (parts[1]?.[0] || "")
+    ).toUpperCase();
+  };
+
   return (
     <div onClick={() => canEdit && onClick && onClick(task)} className={`bg-white rounded-xl p-4 border-l-4 ${borderColor} shadow-sm ${canEdit ? "cursor-pointer hover:shadow-md" : "cursor-not-allowed opacity-80"} hover:shadow-md transition`}>
       <div className="flex justify-between items-center mb-3">
@@ -52,13 +86,17 @@ const TaskCard = ({ task, onClick }) => {
         </div>
 
         <div className="flex -space-x-2">
-          {task.users?.map((u) => {
-            const first = (u.first_name?.[0] || u.name?.[0] || "").toUpperCase();
-            const last = (u.last_name?.[0] || "").toUpperCase();
-            const initials = first + last || "?";
+          {users.map((u) => {
+            const initials = getUserInitials(u);
+            const displayName = getUserDisplayName(u) || "Unknown user";
+            const key = u.id ?? u.user_id ?? u._id ?? displayName;
 
             return (
-              <span key={u.id} className="w-7 h-7 rounded-full bg-[#3b82f6] text-white border-2 border-white flex items-center justify-center text-xs font-semibold" title={u.name || `${u.first_name} ${u.last_name}`}>
+              <span
+                key={key}
+                className="w-7 h-7 rounded-full bg-[#3b82f6] text-white border-2 border-white flex items-center justify-center text-xs font-semibold"
+                title={displayName}
+              >
                 {initials}
               </span>
             );

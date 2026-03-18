@@ -4,32 +4,55 @@ import { Star, MoreHorizontal, Archive, Trash2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useProject } from "../../context/ProjectContext";
 
+const getInitials = (name) => {
+  if (!name) return "?";
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 const ProjectCard = ({ project }) => {
   const navigate = useNavigate();
   const { tasks } = useTask();
-  const { toggleStarProject, deleteProject, archiveProject } = useProject();
+  const { toggleStarProject, deleteProject, archiveProject, user } = useProject();
   const [openMenu, setOpenMenu] = useState(false);
 
-  const { totalTasks, completedTasks, progress } = useMemo(() => {
+  const { totalTasks, completedTasks, progress, members } = useMemo(() => {
     const projectTasks = (tasks || []).filter(
       (t) => Number(t.project_id) === Number(project.id)
     );
 
     const total = projectTasks.length;
-    const done = projectTasks.filter(t => t.status === "Done").length;
+    const done = projectTasks.filter((t) => t.status === "Done").length;
+
+    // Build dynamic members list
+    const memberMap = new Map();
+
+    // Add current user
+    if (user) {
+      memberMap.set(user.id, user);
+    }
+
+    // Add assigned users from project tasks
+    projectTasks.forEach((t) => {
+      if (t.users) {
+        t.users.forEach((u) => memberMap.set(u.id, u));
+      }
+    });
 
     return {
       totalTasks: total,
       completedTasks: done,
-      progress: total ? Math.round((done / total) * 100) : 0
+      progress: total ? Math.round((done / total) * 100) : 0,
+      members: Array.from(memberMap.values()),
     };
-  }, [tasks, project.id]);
+  }, [tasks, project.id, user]);
 
   const handleArchive = async (e) => {
     e.stopPropagation();
     await archiveProject(project.id);
     setOpenMenu(false);
-  }
+  };
 
   const handleDelete = (e) => {
     e.stopPropagation();
@@ -126,14 +149,28 @@ const ProjectCard = ({ project }) => {
 
       {/* Members */}
       <div className="flex items-center gap-2 mt-4">
-        {project.members?.map((m, i) => (
-          <div
-            key={i}
-            className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center"
-          >
-            {m}
-          </div>
-        ))}
+        <div className="flex -space-x-2">
+          {members.slice(0, 5).map((m, i) => {
+            const displayName =
+              m.name || `${m.first_name || ""} ${m.last_name || ""}`.trim();
+
+            return (
+              <div
+                key={m.id || i}
+                className="w-7 h-7 rounded-full bg-blue-600 text-white text-[10px] font-medium flex items-center justify-center border-2 border-white"
+                title={displayName}
+              >
+                {getInitials(displayName)}
+              </div>
+            );
+          })}
+
+          {members.length > 5 && (
+            <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-600 text-xs font-medium flex items-center justify-center border-2 border-white">
+              +{members.length - 5}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

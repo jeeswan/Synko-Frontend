@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useProject } from '../context/ProjectContext';
 import { loginUser } from "../services/apiService";
 import assets from "../assets/assets";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const { setUser } = useProject();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,22 +22,25 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-  try {
-    const res = await loginUser(formData);
+    try {
+      const res = await loginUser(formData);
 
-    const { token, user } = res.data;
+      const { token, user } = res.data;
 
-    localStorage.setItem("token", token);
-    setUser(user);
-    navigate("/dashboard");
+      localStorage.setItem("token", token);
+      setUser(user);
+      navigate("/dashboard");
 
-  } catch (err) {
-    setError(err.response?.data?.message || "Invalid credentials");
-  }
-};
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid credentials");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6">
@@ -101,9 +106,11 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] cursor-pointer transition"
+              disabled={isLoading}
+              className={`w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700 active:scale-[0.98] cursor-pointer'}`}
             >
-              Log In
+              {isLoading && <Loader2 className="animate-spin" size={18} />}
+              {isLoading ? 'Logging in...' : 'Log In'}
             </button>
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             <p className="text-center text-sm text-gray-500 mt-1">

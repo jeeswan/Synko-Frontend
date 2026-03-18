@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
-import { Archive, Tag, Trash2, X } from "lucide-react";
+import { Archive, Tag, Trash2, X, Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useTask } from "../context/TaskContext";
 import api from "../services/api";
+import { useDashboard } from "../context/DashboardController";
 
 const CreateTask = ({ onClose, task }) => {
   const { id } = useParams();
-  const { createTask, updateTask, deleteTask, archiveTask } = useTask();
+  const { createTask, updateTask, deleteTask, archiveTask, getTasks } = useTask();
+  const { fetchStats } = useDashboard();
   const [searchUser, setSearchUser] = useState("");
   const [userResults, setUserResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: task?.name || "",
@@ -93,19 +96,26 @@ const CreateTask = ({ onClose, task }) => {
       due_date: formData.dueDate,
       project_id: id,
       label_ids: formData.labelIds,
-      user_ids: formData.assignees?.map(u => u.id),
+      user_ids: formData.assignees?.map(u => u.id) || [],
     };
+
+    setIsLoading(true);
 
     try {
       if (task) {
         await updateTask(task.id, payload);
       } else {
         await createTask(payload);
+        await getTasks(id, true);
       }
+      await fetchStats();
+
       onClose();
     } catch (err) {
       console.error(err);
       alert("Failed to submit task");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,6 +124,7 @@ const CreateTask = ({ onClose, task }) => {
 
     try {
       await archiveTask(task.id);
+      await fetchStats();
       onClose();
     } catch (err) {
       alert("Failed to archive task");
@@ -127,6 +138,7 @@ const CreateTask = ({ onClose, task }) => {
 
     try {
       await deleteTask(task.id);
+      await fetchStats();
       onClose();
     } catch (err) {
       alert("Failed to delete task");
@@ -340,28 +352,42 @@ const CreateTask = ({ onClose, task }) => {
         {/* Footer */}
         <div className="flex justify-between pt-4 border-t mt-4">
             <div className="flex justify-start gap-3">
-                <div className="flex items-center gap-1 cursor-pointer text-gray-600 hover:text-gray-800" onClick={handleArchiveTask}>
+              {task && (
+                <>
+                  <div
+                    className="flex items-center gap-1 cursor-pointer text-gray-600 hover:text-gray-800"
+                    onClick={handleArchiveTask}
+                  >
                     <Archive size={16} />
                     <span className="text-sm">Archive</span>
-                </div>
-                <div className="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800" onClick={handleDeleteTask}>
+                  </div>
+
+                  <div
+                    className="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800"
+                    onClick={handleDeleteTask}
+                  >
                     <Trash2 size={16} />
                     <span className="text-sm">Delete</span>
-                </div>
+                  </div>
+                </>
+              )}
             </div>
           
             <div className="flex justify-end gap-3">
                 <button
                     onClick={onClose}
-                    className="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-100"
+                    disabled={isLoading}
+                    className="px-4 py-2 border rounded-md text-sm cursor-pointer hover:bg-gray-100 disabled:opacity-50"
                 >
                     Cancel
                 </button>
                 <button
                     onClick={handleCreateTask}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer hover:bg-blue-700"
+                    disabled={isLoading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                    {task ? "Update Task" : "Create Task"}
+                    {isLoading && <Loader2 className="animate-spin" size={16} />}
+                    {isLoading ? (task ? "Updating..." : "Creating...") : (task ? "Update Task" : "Create Task")}
                 </button>
             </div>
           </div>  
