@@ -76,7 +76,7 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
-  // Check user (on app load)
+  // Check user
   const checkUser = async () => {
     const token = localStorage.getItem("token");
     if (!token) {

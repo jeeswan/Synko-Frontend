@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react'
 import dashboard1 from '../../assets/DashboardImg/dashboard1.png'
 import dashboard2 from '../../assets/DashboardImg/dashboard2.png'
 import dashboard3 from '../../assets/DashboardImg/dashboard3.png'
+import dashboard4 from '../../assets/DashboardImg/dashboard4.png'
 
-const images = [dashboard1, dashboard2, dashboard3]
+const images = [dashboard1, dashboard2, dashboard3, dashboard4]
 
 const DashboardPreview = () => {
   const scrollRef = useRef(null)
